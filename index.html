@@ -1110,20 +1110,27 @@
         }
 
         .end-buttons {
-            display: flex;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
             gap: 12px;
-            justify-content: center;
-            flex-wrap: nowrap;
+            justify-items: center;
             margin-top: 30px;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .end-buttons .restart-btn {
-            flex: 0 1 auto;
-            min-width: 100px;
-            padding: 14px 24px !important;
+            display: block !important;
+            padding: 12px 16px !important;
             font-size: 16px !important;
-            width: auto !important;
+            width: 100% !important;
+            max-width: none !important;
+            min-width: 0 !important;
             letter-spacing: 2px !important;
+            box-sizing: border-box !important;
+            text-align: center;
         }
 
         .secondary-btn {
