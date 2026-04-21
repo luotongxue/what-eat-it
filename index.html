@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -915,6 +916,42 @@
             margin-top: 5px;
         }
 
+        .meal-type-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .meal-type-btn {
+            padding: 12px 30px;
+            border: 2px solid var(--primary-gold);
+            background: linear-gradient(135deg, #FFF8DC, #FFF5E6);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .meal-type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(218, 165, 32, 0.3);
+        }
+
+        .meal-type-btn.active {
+            background: linear-gradient(135deg, var(--primary-gold), #FFA500);
+            color: white;
+            border-color: var(--primary-gold);
+            box-shadow: 0 5px 20px rgba(218, 165, 32, 0.5);
+            transform: scale(1.05);
+        }
+
+        .meal-type-btn .icon {
+            margin-right: 8px;
+        }
+
         .end-page {
             text-align: center;
             padding: 60px 20px;
@@ -1109,6 +1146,15 @@
         <main class="main-content" id="mainContent">
             <p class="period-hint" id="periodHint">现在是午餐时间，求一签吧~</p>
 
+            <div class="meal-type-buttons">
+                <button class="meal-type-btn active" id="soloBtn" onclick="selectMealType('solo')">
+                    <span class="icon">🧘</span>1人食
+                </button>
+                <button class="meal-type-btn" id="groupBtn" onclick="selectMealType('group')">
+                    <span class="icon">🎉</span>聚餐
+                </button>
+            </div>
+
             <div class="lottery-container">
                 <div class="lottery-box" id="lotteryBox">
                     <div class="box-top"></div>
@@ -1165,100 +1211,324 @@
     <script>
         const foodsData = {
             breakfast: [
-                { id: 1, name: "包子", emoji: "🥟", description: "皮薄馅大，一口满足" },
-                { id: 2, name: "豆浆油条", emoji: "🥛", description: "经典搭配，暖胃暖心" },
-                { id: 3, name: "煎饼果子", emoji: "🥞", description: "北方人的早晨" },
-                { id: 4, name: "三明治", emoji: "🥪", description: "西式简约风" },
-                { id: 5, name: "面包", emoji: "🍞", description: "简单快捷的选择" },
-                { id: 6, name: "小米粥", emoji: "🥣", description: "养胃佳品" },
-                { id: 7, name: "肠粉", emoji: "🍜", description: "广式早茶经典" },
-                { id: 8, name: "馄饨", emoji: "🥟", description: "汤鲜味美" },
-                { id: 9, name: "饭团", emoji: "🍙", description: "日式简约风" },
-                { id: 10, name: "粽子", emoji: "🫔", description: "糯香四溢" },
-                { id: 11, name: "鸡蛋灌饼", emoji: "🥚", description: "街头美食之王" },
-                { id: 12, name: "肉夹馍", emoji: "🥙", description: "中式汉堡" },
-                { id: 13, name: "胡辣汤", emoji: "🍲", description: "河南人的早晨" },
-                { id: 14, name: "豆腐脑", emoji: "🥣", description: "甜咸之争永恒" },
-                { id: 15, name: "油条", emoji: "🥖", description: "金黄酥脆" },
-                { id: 16, name: "烧麦", emoji: "🥟", description: "皮薄馅多" },
-                { id: 17, name: "小笼包", emoji: "🥟", description: "汤汁满满" },
-                { id: 18, name: "生煎包", emoji: "🥟", description: "底部焦脆" },
-                { id: 19, name: "锅贴", emoji: "🥟", description: "煎至金黄" },
-                { id: 20, name: "葱油饼", emoji: "🥞", description: "葱香四溢" },
-                { id: 21, name: "手抓饼", emoji: "🥞", description: "层层酥脆" },
-                { id: 22, name: "蛋炒饭", emoji: "🍚", description: "粒粒分明" },
-                { id: 23, name: "热干面", emoji: "🍜", description: "武汉人的早晨" },
-                { id: 24, name: "凉皮", emoji: "🥗", description: "清爽开胃" },
-                { id: 25, name: "包子铺套餐", emoji: "🥟", description: "包子+粥+小菜" },
-                { id: 26, name: "牛奶麦片", emoji: "🥛", description: "营养健康" },
-                { id: 27, name: "酸奶水果", emoji: "🥣", description: "清新早晨" },
-                { id: 28, name: "玉米", emoji: "🌽", description: "粗粮养生" },
-                { id: 29, name: "红薯", emoji: "🍠", description: "甜糯可口" },
-                { id: 30, name: "茶叶蛋", emoji: "🥚", description: "入味十足" }
+                { id: 1, name: "包子", emoji: "🥟", description: "皮薄馅大，一口满足", tags: ["solo"] },
+                { id: 2, name: "豆浆油条", emoji: "🥛", description: "经典搭配，暖胃暖心", tags: ["solo"] },
+                { id: 3, name: "煎饼果子", emoji: "🥞", description: "北方人的早晨", tags: ["solo"] },
+                { id: 4, name: "三明治", emoji: "🥪", description: "西式简约风", tags: ["solo"] },
+                { id: 5, name: "面包", emoji: "🍞", description: "简单快捷的选择", tags: ["solo"] },
+                { id: 6, name: "小米粥", emoji: "🥣", description: "养胃佳品", tags: ["solo"] },
+                { id: 7, name: "肠粉", emoji: "🍜", description: "广式早茶经典", tags: ["solo", "group"] },
+                { id: 8, name: "馄饨", emoji: "🥟", description: "汤鲜味美", tags: ["solo"] },
+                { id: 9, name: "饭团", emoji: "🍙", description: "日式简约风", tags: ["solo"] },
+                { id: 10, name: "粽子", emoji: "🫔", description: "糯香四溢", tags: ["solo"] },
+                { id: 11, name: "鸡蛋灌饼", emoji: "🥚", description: "街头美食之王", tags: ["solo"] },
+                { id: 12, name: "肉夹馍", emoji: "🥙", description: "中式汉堡", tags: ["solo"] },
+                { id: 13, name: "胡辣汤", emoji: "🍲", description: "河南人的早晨", tags: ["solo"] },
+                { id: 14, name: "豆腐脑", emoji: "🥣", description: "甜咸之争永恒", tags: ["solo"] },
+                { id: 15, name: "油条", emoji: "🥖", description: "金黄酥脆", tags: ["solo"] },
+                { id: 16, name: "烧麦", emoji: "🥟", description: "皮薄馅多", tags: ["solo", "group"] },
+                { id: 17, name: "小笼包", emoji: "🥟", description: "汤汁满满", tags: ["solo", "group"] },
+                { id: 18, name: "生煎包", emoji: "🥟", description: "底部焦脆", tags: ["solo", "group"] },
+                { id: 19, name: "锅贴", emoji: "🥟", description: "煎至金黄", tags: ["solo", "group"] },
+                { id: 20, name: "葱油饼", emoji: "🥞", description: "葱香四溢", tags: ["solo"] },
+                { id: 21, name: "手抓饼", emoji: "🥞", description: "层层酥脆", tags: ["solo"] },
+                { id: 22, name: "蛋炒饭", emoji: "🍚", description: "粒粒分明", tags: ["solo"] },
+                { id: 23, name: "热干面", emoji: "🍜", description: "武汉人的早晨", tags: ["solo"] },
+                { id: 24, name: "凉皮", emoji: "🥗", description: "清爽开胃", tags: ["solo"] },
+                { id: 25, name: "包子铺套餐", emoji: "🥟", description: "包子+粥+小菜", tags: ["solo"] },
+                { id: 26, name: "牛奶麦片", emoji: "🥛", description: "营养健康", tags: ["solo"] },
+                { id: 27, name: "酸奶水果", emoji: "🥣", description: "清新早晨", tags: ["solo"] },
+                { id: 28, name: "玉米", emoji: "🌽", description: "粗粮养生", tags: ["solo"] },
+                { id: 29, name: "红薯", emoji: "🍠", description: "甜糯可口", tags: ["solo"] },
+                { id: 30, name: "茶叶蛋", emoji: "🥚", description: "入味十足", tags: ["solo"] },
+                { id: 31, name: "肯德基早餐", emoji: "🍗", description: "帕尼尼+豆浆套餐", tags: ["solo"] },
+                { id: 32, name: "麦当劳早餐", emoji: "🍔", description: "吉士蛋麦满分+咖啡", tags: ["solo"] },
+                { id: 33, name: "永和豆浆", emoji: "🥛", description: "豆浆+油条+烧饼", tags: ["solo", "group"] },
+                { id: 34, name: "真功夫早餐", emoji: "🥟", description: "蒸饺+粥套餐", tags: ["solo"] },
+                { id: 35, name: "永和大王", emoji: "🥣", description: "豆浆+饭团+卤蛋", tags: ["solo"] },
+                { id: 36, name: "巴比馒头", emoji: "🥟", description: "包子+豆浆套餐", tags: ["solo"] },
+                { id: 37, name: "桃园眷村", emoji: "🥣", description: "豆浆+油条+烧饼套餐", tags: ["solo", "group"] },
+                { id: 38, name: "星巴克早餐", emoji: "☕", description: "咖啡+三明治", tags: ["solo"] },
+                { id: 39, name: "全家早餐", emoji: "🍙", description: "饭团+咖啡套餐", tags: ["solo"] },
+                { id: 40, name: "罗森早餐", emoji: "🥪", description: "三明治+豆浆套餐", tags: ["solo"] }
             ],
             lunch: [
-                { id: 1, name: "黄焖鸡米饭", emoji: "🍗", description: "鲜嫩多汁，下饭神器" },
-                { id: 2, name: "麻辣烫", emoji: "🍲", description: "麻辣鲜香，自选搭配" },
-                { id: 3, name: "盖浇饭", emoji: "🍚", description: "菜饭一体，快捷方便" },
-                { id: 4, name: "汉堡套餐", emoji: "🍔", description: "西式快餐经典" },
-                { id: 5, name: "披萨", emoji: "🍕", description: "芝士就是力量" },
-                { id: 6, name: "拉面", emoji: "🍜", description: "汤浓面劲道" },
-                { id: 7, name: "炒饭", emoji: "🍚", description: "粒粒分明，锅气十足" },
-                { id: 8, name: "轻食沙拉", emoji: "🥗", description: "健康低卡" },
-                { id: 9, name: "螺蛳粉", emoji: "🍜", description: "闻着臭吃着香" },
-                { id: 10, name: "牛肉面", emoji: "🍜", description: "大块牛肉，满足" },
-                { id: 11, name: "兰州拉面", emoji: "🍜", description: "一清二白三红四绿" },
-                { id: 12, name: "沙县小吃", emoji: "🥟", description: "国民快餐" },
-                { id: 13, name: "隆江猪脚饭", emoji: "🍚", description: "软糯入味" },
-                { id: 14, name: "煲仔饭", emoji: "🍚", description: "锅巴是灵魂" },
-                { id: 15, name: "木桶饭", emoji: "🍚", description: "木桶香气" },
-                { id: 16, name: "快餐盒饭", emoji: "🍱", description: "两荤两素" },
-                { id: 17, name: "日式便当", emoji: "🍱", description: "精致好看" },
-                { id: 18, name: "韩式拌饭", emoji: "🍚", description: "石锅+拌酱" },
-                { id: 19, name: "石锅拌饭", emoji: "🍚", description: "滋滋作响" },
-                { id: 20, name: "意面", emoji: "🍝", description: "西式风情" },
-                { id: 21, name: "炸鸡汉堡", emoji: "🍗", description: "快乐加倍" },
-                { id: 22, name: "烤鸭饭", emoji: "🦆", description: "皮脆肉嫩" },
-                { id: 23, name: "卤肉饭", emoji: "🍚", description: "卤香浓郁" },
-                { id: 24, name: "酸菜鱼米饭", emoji: "🐟", description: "酸爽开胃" },
-                { id: 25, name: "黄焖排骨", emoji: "🍖", description: "啃骨头的快乐" },
-                { id: 26, name: "红烧肉饭", emoji: "🍚", description: "肥而不腻" },
-                { id: 27, name: "宫保鸡丁饭", emoji: "🍚", description: "花生+鸡丁" },
-                { id: 28, name: "鱼香肉丝饭", emoji: "🍚", description: "鱼香四溢" },
-                { id: 29, name: "麻婆豆腐饭", emoji: "🍚", description: "麻辣下饭" },
-                { id: 30, name: "回锅肉饭", emoji: "🍚", description: "蒜苗+五花肉" }
+                { id: 1, name: "黄焖鸡米饭", emoji: "🍗", description: "鲜嫩多汁，下饭神器", tags: ["solo"] },
+                { id: 2, name: "麻辣烫", emoji: "🍲", description: "麻辣鲜香，自选搭配", tags: ["solo"] },
+                { id: 3, name: "盖浇饭", emoji: "🍚", description: "菜饭一体，快捷方便", tags: ["solo"] },
+                { id: 4, name: "汉堡套餐", emoji: "🍔", description: "西式快餐经典", tags: ["solo"] },
+                { id: 5, name: "披萨", emoji: "🍕", description: "芝士就是力量", tags: ["solo", "group"] },
+                { id: 6, name: "拉面", emoji: "🍜", description: "汤浓面劲道", tags: ["solo"] },
+                { id: 7, name: "炒饭", emoji: "🍚", description: "粒粒分明，锅气十足", tags: ["solo"] },
+                { id: 8, name: "轻食沙拉", emoji: "🥗", description: "健康低卡", tags: ["solo"] },
+                { id: 9, name: "螺蛳粉", emoji: "🍜", description: "闻着臭吃着香", tags: ["solo"] },
+                { id: 10, name: "牛肉面", emoji: "🍜", description: "大块牛肉，满足", tags: ["solo"] },
+                { id: 11, name: "兰州拉面", emoji: "🍜", description: "一清二白三红四绿", tags: ["solo"] },
+                { id: 12, name: "沙县小吃", emoji: "🥟", description: "国民快餐", tags: ["solo"] },
+                { id: 13, name: "隆江猪脚饭", emoji: "🍚", description: "软糯入味", tags: ["solo"] },
+                { id: 14, name: "煲仔饭", emoji: "🍚", description: "锅巴是灵魂", tags: ["solo"] },
+                { id: 15, name: "木桶饭", emoji: "🍚", description: "木桶香气", tags: ["solo"] },
+                { id: 16, name: "快餐盒饭", emoji: "🍱", description: "两荤两素", tags: ["solo"] },
+                { id: 17, name: "日式便当", emoji: "🍱", description: "精致好看", tags: ["solo"] },
+                { id: 18, name: "韩式拌饭", emoji: "🍚", description: "石锅+拌酱", tags: ["solo"] },
+                { id: 19, name: "石锅拌饭", emoji: "🍚", description: "滋滋作响", tags: ["solo"] },
+                { id: 20, name: "意面", emoji: "🍝", description: "西式风情", tags: ["solo"] },
+                { id: 21, name: "炸鸡汉堡", emoji: "🍗", description: "快乐加倍", tags: ["solo"] },
+                { id: 22, name: "烤鸭饭", emoji: "🦆", description: "皮脆肉嫩", tags: ["solo"] },
+                { id: 23, name: "卤肉饭", emoji: "🍚", description: "卤香浓郁", tags: ["solo"] },
+                { id: 24, name: "酸菜鱼米饭", emoji: "🐟", description: "酸爽开胃", tags: ["solo"] },
+                { id: 25, name: "黄焖排骨", emoji: "🍖", description: "啃骨头的快乐", tags: ["solo"] },
+                { id: 26, name: "红烧肉饭", emoji: "🍚", description: "肥而不腻", tags: ["solo"] },
+                { id: 27, name: "宫保鸡丁饭", emoji: "🍚", description: "花生+鸡丁", tags: ["solo"] },
+                { id: 28, name: "鱼香肉丝饭", emoji: "🍚", description: "鱼香四溢", tags: ["solo"] },
+                { id: 29, name: "麻婆豆腐饭", emoji: "🍚", description: "麻辣下饭", tags: ["solo"] },
+                { id: 30, name: "回锅肉饭", emoji: "🍚", description: "蒜苗+五花肉", tags: ["solo"] },
+                { id: 31, name: "红烧牛肉面", emoji: "🍜", description: "牛肉大块，汤汁浓郁", tags: ["solo"] },
+                { id: 32, name: "刀削面", emoji: "🍜", description: "面片厚实有嚼劲", tags: ["solo"] },
+                { id: 33, name: "炸酱面", emoji: "🍜", description: "老北京味道", tags: ["solo"] },
+                { id: 34, name: "打卤面", emoji: "🍜", description: "卤汁浇面，香浓入味", tags: ["solo"] },
+                { id: 35, name: "重庆小面", emoji: "🍜", description: "麻辣鲜香，重庆人的魂", tags: ["solo"] },
+                { id: 36, name: "担担面", emoji: "🍜", description: "川味经典", tags: ["solo"] },
+                { id: 37, name: "热干面", emoji: "🍜", description: "芝麻酱拌面", tags: ["solo"] },
+                { id: 38, name: "拌面", emoji: "🍜", description: "简单快捷", tags: ["solo"] },
+                { id: 39, name: "炒米粉", emoji: "🍜", description: "米粉Q弹，镬气十足", tags: ["solo"] },
+                { id: 40, name: "桂林米粉", emoji: "🍜", description: "桂林山水甲天下", tags: ["solo"] },
+                { id: 41, name: "过桥米线", emoji: "🍜", description: "云南风味", tags: ["solo"] },
+                { id: 42, name: "酸辣粉", emoji: "🍜", description: "酸辣开胃", tags: ["solo"] },
+                { id: 43, name: "土豆粉", emoji: "🍜", description: "滑嫩爽口", tags: ["solo"] },
+                { id: 44, name: "宽粉", emoji: "🍜", description: "宽粉配辣汤", tags: ["solo"] },
+                { id: 45, name: "粉丝煲", emoji: "🍜", description: "粉丝入味", tags: ["solo"] },
+                { id: 46, name: "肠粉", emoji: "🍜", description: "广式经典", tags: ["solo"] },
+                { id: 47, name: "河粉", emoji: "🍜", description: "爽滑细腻", tags: ["solo"] },
+                { id: 48, name: "炒河粉", emoji: "🍜", description: "镬气十足", tags: ["solo"] },
+                { id: 49, name: "牛河", emoji: "🍜", description: "牛肉炒河粉", tags: ["solo"] },
+                { id: 50, name: "炒面", emoji: "🍜", description: "简单美味", tags: ["solo"] },
+                { id: 51, name: "炒乌冬", emoji: "🍜", description: "日式风味", tags: ["solo"] },
+                { id: 52, name: "日式拉面", emoji: "🍜", description: "豚骨浓汤", tags: ["solo"] },
+                { id: 53, name: "韩式冷面", emoji: "🍜", description: "冰凉爽口", tags: ["solo"] },
+                { id: 54, name: "炸酱米线", emoji: "🍜", description: "炸酱+米线", tags: ["solo"] },
+                { id: 55, name: "番茄鸡蛋面", emoji: "🍜", description: "酸甜可口", tags: ["solo"] },
+                { id: 56, name: "葱油拌面", emoji: "🍜", description: "葱香四溢", tags: ["solo"] },
+                { id: 57, name: "油泼面", emoji: "🍜", description: "热油浇面，香气扑鼻", tags: ["solo"] },
+                { id: 58, name: "臊子面", emoji: "🍜", description: "陕西风味", tags: ["solo"] },
+                { id: 59, name: "biangbiang面", emoji: "🍜", description: "宽面劲道", tags: ["solo"] },
+                { id: 60, name: "烩面", emoji: "🍜", description: "河南特色", tags: ["solo"] },
+                { id: 61, name: "皮蛋瘦肉粥", emoji: "🥣", description: "广式经典粥", tags: ["solo"] },
+                { id: 62, name: "排骨粥", emoji: "🥣", description: "排骨软烂", tags: ["solo"] },
+                { id: 63, name: "海鲜粥", emoji: "🥣", description: "鲜虾+螃蟹", tags: ["solo"] },
+                { id: 64, name: "牛肉粥", emoji: "🥣", description: "牛肉嫩滑", tags: ["solo"] },
+                { id: 65, name: "鸡肉粥", emoji: "🥣", description: "清淡养胃", tags: ["solo"] },
+                { id: 66, name: "南瓜粥", emoji: "🥣", description: "甜糯可口", tags: ["solo"] },
+                { id: 67, name: "八宝粥", emoji: "🥣", description: "营养丰富", tags: ["solo"] },
+                { id: 68, name: "皮蛋粥", emoji: "🥣", description: "皮蛋+白粥", tags: ["solo"] },
+                { id: 69, name: "生滚粥", emoji: "🥣", description: "现滚现吃", tags: ["solo"] },
+                { id: 70, name: "鱼片粥", emoji: "🥣", description: "鱼片鲜嫩", tags: ["solo"] },
+                { id: 71, name: "猪杂粥", emoji: "🥣", description: "猪杂丰富", tags: ["solo"] },
+                { id: 72, name: "艇仔粥", emoji: "🥣", description: "广式传统", tags: ["solo"] },
+                { id: 73, name: "鸡丝粥", emoji: "🥣", description: "鸡丝嫩滑", tags: ["solo"] },
+                { id: 74, name: "牛肉炒河", emoji: "🍜", description: "牛肉+河粉", tags: ["solo"] },
+                { id: 75, name: "猪脚面", emoji: "🍜", description: "猪脚软糯", tags: ["solo"] },
+                { id: 76, name: "肥肠面", emoji: "🍜", description: "肥肠入味", tags: ["solo"] },
+                { id: 77, name: "牛杂面", emoji: "🍜", description: "牛杂丰富", tags: ["solo"] },
+                { id: 78, name: "牛腩面", emoji: "🍜", description: "牛腩软烂", tags: ["solo"] },
+                { id: 79, name: "牛肚面", emoji: "🍜", description: "牛肚爽脆", tags: ["solo"] },
+                { id: 80, name: "猪肚鸡", emoji: "🍲", description: "猪肚+鸡汤", tags: ["group"] },
+                { id: 81, name: "酸菜鱼", emoji: "🐟", description: "酸爽开胃", tags: ["group"] },
+                { id: 82, name: "水煮鱼", emoji: "🐟", description: "麻辣鲜香", tags: ["group"] },
+                { id: 83, name: "水煮肉片", emoji: "🥩", description: "肉片嫩滑", tags: ["group"] },
+                { id: 84, name: "毛血旺", emoji: "🍲", description: "麻辣重口", tags: ["group"] },
+                { id: 85, name: "夫妻肺片", emoji: "🥩", description: "川味凉菜", tags: ["group"] },
+                { id: 86, name: "口水鸡", emoji: "🍗", description: "麻辣鲜香", tags: ["solo"] },
+                { id: 87, name: "白切鸡", emoji: "🍗", description: "原汁原味", tags: ["solo"] },
+                { id: 88, name: "盐焗鸡", emoji: "🍗", description: "咸香入味", tags: ["solo"] },
+                { id: 89, name: "手撕鸡", emoji: "🍗", description: "手撕更香", tags: ["solo"] },
+                { id: 90, name: "口水鸡饭", emoji: "🍚", description: "口水鸡+米饭", tags: ["solo"] },
+                { id: 91, name: "叉烧饭", emoji: "🍚", description: "叉烧蜜汁", tags: ["solo"] },
+                { id: 92, name: "烧鸭饭", emoji: "🍚", description: "烧鸭皮脆", tags: ["solo"] },
+                { id: 93, name: "烧鹅饭", emoji: "🍚", description: "烧鹅香浓", tags: ["solo"] },
+                { id: 94, name: "白切鸡饭", emoji: "🍚", description: "白切鸡+米饭", tags: ["solo"] },
+                { id: 95, name: "豉油鸡饭", emoji: "🍚", description: "豉油入味", tags: ["solo"] },
+                { id: 96, name: "盐焗鸡饭", emoji: "🍚", description: "盐焗鸡+米饭", tags: ["solo"] },
+                { id: 97, name: "手撕鸡饭", emoji: "🍚", description: "手撕鸡+米饭", tags: ["solo"] },
+                { id: 98, name: "咖喱鸡饭", emoji: "🍚", description: "咖喱浓郁", tags: ["solo"] },
+                { id: 99, name: "咖喱牛腩饭", emoji: "🍚", description: "咖喱+牛腩", tags: ["solo"] },
+                { id: 100, name: "咖喱鱼蛋饭", emoji: "🍚", description: "港式风味", tags: ["solo"] },
+                { id: 101, name: "咖喱猪排饭", emoji: "🍚", description: "日式咖喱", tags: ["solo"] },
+                { id: 102, name: "日式猪排饭", emoji: "🍚", description: "猪排酥脆", tags: ["solo"] },
+                { id: 103, name: "日式牛丼", emoji: "🍚", description: "牛肉+洋葱", tags: ["solo"] },
+                { id: 104, name: "日式鳗鱼饭", emoji: "🍚", description: "鳗鱼甜香", tags: ["solo"] },
+                { id: 105, name: "韩式炸鸡", emoji: "🍗", description: "韩式甜辣", tags: ["solo"] },
+                { id: 106, name: "肯德基", emoji: "🍗", description: "炸鸡汉堡套餐", tags: ["solo"] },
+                { id: 107, name: "麦当劳", emoji: "🍔", description: "巨无霸+薯条", tags: ["solo"] },
+                { id: 108, name: "必胜客", emoji: "🍕", description: "披萨+意面", tags: ["solo", "group"] },
+                { id: 109, name: "真功夫", emoji: "🥟", description: "蒸品快餐", tags: ["solo"] },
+                { id: 110, name: "老乡鸡", emoji: "🍗", description: "农家土鸡汤", tags: ["solo"] },
+                { id: 111, name: "大米先生", emoji: "🍚", description: "现炒快餐", tags: ["solo"] },
+                { id: 112, name: "乡村基", emoji: "🍚", description: "川味快餐", tags: ["solo"] },
+                { id: 113, name: "吉野家", emoji: "🍚", description: "日式牛丼饭", tags: ["solo"] },
+                { id: 114, name: "食其家", emoji: "🍚", description: "日式牛肉饭", tags: ["solo"] },
+                { id: 115, name: "味千拉面", emoji: "🍜", description: "豚骨拉面", tags: ["solo"] },
+                { id: 116, name: "和府捞面", emoji: "🍜", description: "书房里的拉面", tags: ["solo"] },
+                { id: 117, name: "马记永", emoji: "🍜", description: "兰州牛肉面", tags: ["solo"] },
+                { id: 118, name: "陈香贵", emoji: "🍜", description: "兰州牛肉面", tags: ["solo"] },
+                { id: 119, name: "张亮麻辣烫", emoji: "🍲", description: "麻辣烫连锁", tags: ["solo"] },
+                { id: 120, name: "杨国福麻辣烫", emoji: "🍲", description: "骨汤麻辣烫", tags: ["solo"] },
+                { id: 121, name: "海底捞", emoji: "🍲", description: "服务超好的火锅", tags: ["group"] },
+                { id: 122, name: "西贝莜面村", emoji: "🍜", description: "西北风味聚餐", tags: ["group"] },
+                { id: 123, name: "绿茶餐厅", emoji: "🍳", description: "创意融合菜", tags: ["group"] },
+                { id: 124, name: "外婆家", emoji: "🍳", description: "杭帮菜聚餐", tags: ["group"] },
+                { id: 125, name: "南京大牌档", emoji: "🏮", description: "金陵风味", tags: ["group"] },
+                { id: 126, name: "眉州东坡", emoji: "🍳", description: "川菜聚餐首选", tags: ["group"] },
+                { id: 127, name: "鼎泰丰", emoji: "🥟", description: "小笼包名店", tags: ["group"] },
+                { id: 128, name: "全聚德", emoji: "🦆", description: "北京烤鸭", tags: ["group"] },
+                { id: 129, name: "大董", emoji: "🦆", description: "意境菜烤鸭", tags: ["group"] },
+                { id: 130, name: "凑凑火锅", emoji: "🍲", description: "台式火锅", tags: ["group"] },
+                { id: 131, name: "哥老官", emoji: "🍲", description: "重庆美蛙火锅", tags: ["group"] },
+                { id: 132, name: "左庭右院", emoji: "🍲", description: "鲜牛肉火锅", tags: ["group"] },
+                { id: 133, name: "巴奴毛肚火锅", emoji: "🍲", description: "毛肚火锅", tags: ["group"] },
+                { id: 134, name: "太二酸菜鱼", emoji: "🐟", description: "酸菜比鱼好吃", tags: ["group"] },
+                { id: 135, name: "探鱼", emoji: "🐟", description: "烤鱼专门店", tags: ["group"] },
+                { id: 136, name: "炉鱼", emoji: "🐟", description: "烤鱼连锁", tags: ["group"] },
+                { id: 137, name: "江边城外", emoji: "🐟", description: "烤全鱼", tags: ["group"] }
             ],
             dinner: [
-                { id: 1, name: "火锅", emoji: "🍲", description: "人间烟火气，最抚凡人心" },
-                { id: 2, name: "烧烤", emoji: "🍢", description: "撸串的快乐" },
-                { id: 3, name: "日料寿司", emoji: "🍣", description: "精致新鲜" },
-                { id: 4, name: "炒菜", emoji: "🍳", description: "家常味道" },
-                { id: 5, name: "外卖套餐", emoji: "🍱", description: "省心省力" },
-                { id: 6, name: "面条", emoji: "🍜", description: "暖胃暖心" },
-                { id: 7, name: "炸鸡", emoji: "🍗", description: "酥脆多汁" },
-                { id: 8, name: "小龙虾", emoji: "🦞", description: "夜宵之王" },
-                { id: 9, name: "烤鱼", emoji: "🐟", description: "外焦里嫩" },
-                { id: 10, name: "干锅", emoji: "🍲", description: "干香入味" },
-                { id: 11, name: "冒菜", emoji: "🍲", description: "一个人的火锅" },
-                { id: 12, name: "串串香", emoji: "🍢", description: "数签签的快乐" },
-                { id: 13, name: "麻辣烫大份", emoji: "🍲", description: "晚上就要吃大的" },
-                { id: 14, name: "羊蝎子", emoji: "🍖", description: "啃骨头的快乐" },
-                { id: 15, name: "牛蛙", emoji: "🐸", description: "鲜嫩爽滑" },
-                { id: 16, name: "铁板烧", emoji: "🍳", description: "滋滋作响" },
-                { id: 17, name: "烤肉拌饭", emoji: "🍚", description: "烤肉+米饭" },
-                { id: 18, name: "炒河粉", emoji: "🍜", description: "镬气十足" },
-                { id: 19, name: "炒面", emoji: "🍜", description: "简单美味" },
-                { id: 20, name: "水饺", emoji: "🥟", description: "好吃不过饺子" },
-                { id: 21, name: "馄饨大份", emoji: "🥟", description: "汤鲜味美" },
-                { id: 22, name: "砂锅粥", emoji: "🥣", description: "暖胃养生" },
-                { id: 23, name: "海鲜大餐", emoji: "🦞", description: "奢侈一把" },
-                { id: 24, name: "牛排", emoji: "🥩", description: "西式大餐" },
-                { id: 25, name: "披萨大份", emoji: "🍕", description: "芝士瀑布" },
-                { id: 26, name: "豪华汉堡", emoji: "🍔", description: "双层肉饼" },
-                { id: 27, name: "炸鸡啤酒", emoji: "🍗", description: "韩剧标配" },
-                { id: 28, name: "卤味拼盘", emoji: "🍗", description: "下酒好菜" },
-                { id: 29, name: "凉菜拼盘", emoji: "🥗", description: "清爽开胃" },
-                { id: 30, name: "夜宵套餐", emoji: "🍱", description: "深夜食堂" }
+                { id: 1, name: "火锅", emoji: "🍲", description: "人间烟火气，最抚凡人心", tags: ["group"] },
+                { id: 2, name: "烧烤", emoji: "🍢", description: "撸串的快乐", tags: ["group"] },
+                { id: 3, name: "日料寿司", emoji: "🍣", description: "精致新鲜", tags: ["group"] },
+                { id: 4, name: "炒菜", emoji: "🍳", description: "家常味道", tags: ["group"] },
+                { id: 5, name: "外卖套餐", emoji: "🍱", description: "省心省力", tags: ["solo"] },
+                { id: 6, name: "面条", emoji: "🍜", description: "暖胃暖心", tags: ["solo"] },
+                { id: 7, name: "炸鸡", emoji: "🍗", description: "酥脆多汁", tags: ["solo"] },
+                { id: 8, name: "小龙虾", emoji: "🦞", description: "夜宵之王", tags: ["group"] },
+                { id: 9, name: "烤鱼", emoji: "🐟", description: "外焦里嫩", tags: ["group"] },
+                { id: 10, name: "干锅", emoji: "🍲", description: "干香入味", tags: ["group"] },
+                { id: 11, name: "冒菜", emoji: "🍲", description: "一个人的火锅", tags: ["solo"] },
+                { id: 12, name: "串串香", emoji: "🍢", description: "数签签的快乐", tags: ["group"] },
+                { id: 13, name: "麻辣烫大份", emoji: "🍲", description: "晚上就要吃大的", tags: ["solo"] },
+                { id: 14, name: "羊蝎子", emoji: "🍖", description: "啃骨头的快乐", tags: ["group"] },
+                { id: 15, name: "牛蛙", emoji: "🐸", description: "鲜嫩爽滑", tags: ["group"] },
+                { id: 16, name: "铁板烧", emoji: "🍳", description: "滋滋作响", tags: ["group"] },
+                { id: 17, name: "烤肉拌饭", emoji: "🍚", description: "烤肉+米饭", tags: ["solo"] },
+                { id: 18, name: "炒河粉", emoji: "🍜", description: "镬气十足", tags: ["solo"] },
+                { id: 19, name: "炒面", emoji: "🍜", description: "简单美味", tags: ["solo"] },
+                { id: 20, name: "水饺", emoji: "🥟", description: "好吃不过饺子", tags: ["solo"] },
+                { id: 21, name: "馄饨大份", emoji: "🥟", description: "汤鲜味美", tags: ["solo"] },
+                { id: 22, name: "砂锅粥", emoji: "🥣", description: "暖胃养生", tags: ["solo"] },
+                { id: 23, name: "海鲜大餐", emoji: "🦞", description: "奢侈一把", tags: ["group"] },
+                { id: 24, name: "牛排", emoji: "🥩", description: "西式大餐", tags: ["group"] },
+                { id: 25, name: "披萨大份", emoji: "🍕", description: "芝士瀑布", tags: ["group"] },
+                { id: 26, name: "豪华汉堡", emoji: "🍔", description: "双层肉饼", tags: ["solo"] },
+                { id: 27, name: "炸鸡啤酒", emoji: "🍗", description: "韩剧标配", tags: ["group"] },
+                { id: 28, name: "卤味拼盘", emoji: "🍗", description: "下酒好菜", tags: ["group"] },
+                { id: 29, name: "凉菜拼盘", emoji: "🥗", description: "清爽开胃", tags: ["group"] },
+                { id: 30, name: "夜宵套餐", emoji: "🍱", description: "深夜食堂", tags: ["solo"] },
+                { id: 31, name: "烤羊肉串", emoji: "🍢", description: "孜然飘香", tags: ["group"] },
+                { id: 32, name: "烤牛肉串", emoji: "🍢", description: "牛肉鲜嫩", tags: ["group"] },
+                { id: 33, name: "烤鸡翅", emoji: "🍗", description: "外焦里嫩", tags: ["group"] },
+                { id: 34, name: "烤鸡腿", emoji: "🍗", description: "肉质饱满", tags: ["group"] },
+                { id: 35, name: "烤五花肉", emoji: "🥩", description: "肥而不腻", tags: ["group"] },
+                { id: 36, name: "烤生蚝", emoji: "🦪", description: "蒜蓉粉丝", tags: ["group"] },
+                { id: 37, name: "烤扇贝", emoji: "🦪", description: "鲜嫩多汁", tags: ["group"] },
+                { id: 38, name: "烤鱿鱼", emoji: "🦑", description: "Q弹爽口", tags: ["group"] },
+                { id: 39, name: "烤茄子", emoji: "🍆", description: "蒜蓉烤茄子", tags: ["group"] },
+                { id: 40, name: "烤韭菜", emoji: "🥬", description: "烧烤必点", tags: ["group"] },
+                { id: 41, name: "烤玉米", emoji: "🌽", description: "甜糯可口", tags: ["group"] },
+                { id: 42, name: "烤馒头片", emoji: "🍞", description: "外脆内软", tags: ["group"] },
+                { id: 43, name: "烤面包片", emoji: "🍞", description: "奶香四溢", tags: ["group"] },
+                { id: 44, name: "烤金针菇", emoji: "🍄", description: "蒜蓉粉丝烤", tags: ["group"] },
+                { id: 45, name: "烤土豆片", emoji: "🥔", description: "外焦里嫩", tags: ["group"] },
+                { id: 46, name: "烤面筋", emoji: "🍢", description: "街头经典", tags: ["solo"] },
+                { id: 47, name: "烤冷面", emoji: "🍜", description: "东北特色", tags: ["solo"] },
+                { id: 48, name: "烤红薯", emoji: "🍠", description: "甜糯暖胃", tags: ["solo"] },
+                { id: 49, name: "烤肠", emoji: "🌭", description: "外脆内嫩", tags: ["solo"] },
+                { id: 50, name: "烤脑花", emoji: "🧠", description: "麻辣鲜香", tags: ["solo"] },
+                { id: 51, name: "烤牛蛙", emoji: "🐸", description: "鲜嫩入味", tags: ["group"] },
+                { id: 52, name: "烤鱼头", emoji: "🐟", description: "鱼头豆腐", tags: ["group"] },
+                { id: 53, name: "烤全羊", emoji: "🐑", description: "草原风味", tags: ["group"] },
+                { id: 54, name: "烤乳猪", emoji: "🐷", description: "皮脆肉嫩", tags: ["group"] },
+                { id: 55, name: "烤鸡", emoji: "🍗", description: "整只烤鸡", tags: ["group"] },
+                { id: 56, name: "烤鸭", emoji: "🦆", description: "北京烤鸭", tags: ["group"] },
+                { id: 57, name: "烤鹅", emoji: "🦆", description: "广式烧鹅", tags: ["group"] },
+                { id: 58, name: "烤排骨", emoji: "🍖", description: "蜜汁排骨", tags: ["group"] },
+                { id: 59, name: "烤羊排", emoji: "🍖", description: "孜然羊排", tags: ["group"] },
+                { id: 60, name: "烤牛肋条", emoji: "🥩", description: "肉质鲜嫩", tags: ["group"] },
+                { id: 61, name: "四川火锅", emoji: "🍲", description: "麻辣鲜香", tags: ["group"] },
+                { id: 62, name: "重庆火锅", emoji: "🍲", description: "九宫格火锅", tags: ["group"] },
+                { id: 63, name: "老北京涮羊肉", emoji: "🍲", description: "铜锅涮肉", tags: ["group"] },
+                { id: 64, name: "潮汕牛肉火锅", emoji: "🍲", description: "鲜切牛肉", tags: ["group"] },
+                { id: 65, name: "椰子鸡火锅", emoji: "🍲", description: "清甜椰子汤", tags: ["group"] },
+                { id: 66, name: "番茄火锅", emoji: "🍲", description: "酸甜开胃", tags: ["group"] },
+                { id: 67, name: "菌菇火锅", emoji: "🍲", description: "鲜香养生", tags: ["group"] },
+                { id: 68, name: "酸菜白肉锅", emoji: "🍲", description: "东北风味", tags: ["group"] },
+                { id: 69, name: "花胶鸡火锅", emoji: "🍲", description: "滋补养颜", tags: ["group"] },
+                { id: 70, name: "猪肚鸡火锅", emoji: "🍲", description: "猪肚+鸡汤", tags: ["group"] },
+                { id: 71, name: "寿喜烧", emoji: "🍲", description: "日式火锅", tags: ["group"] },
+                { id: 72, name: "部队火锅", emoji: "🍲", description: "韩式风味", tags: ["group"] },
+                { id: 73, name: "石锅鱼", emoji: "🐟", description: "石锅煮鱼", tags: ["group"] },
+                { id: 74, name: "纸包鱼", emoji: "🐟", description: "纸包烤鱼", tags: ["group"] },
+                { id: 75, name: "酸菜鱼", emoji: "🐟", description: "酸爽开胃", tags: ["group"] },
+                { id: 76, name: "水煮鱼", emoji: "🐟", description: "麻辣鲜香", tags: ["group"] },
+                { id: 77, name: "麻辣香锅", emoji: "🍲", description: "自选搭配", tags: ["group"] },
+                { id: 78, name: "干锅花菜", emoji: "🥦", description: "花菜干香", tags: ["group"] },
+                { id: 79, name: "干锅土豆片", emoji: "🥔", description: "土豆干香", tags: ["group"] },
+                { id: 80, name: "干锅牛蛙", emoji: "🐸", description: "牛蛙鲜嫩", tags: ["group"] },
+                { id: 81, name: "干锅肥肠", emoji: "🍲", description: "肥肠入味", tags: ["group"] },
+                { id: 82, name: "干锅虾", emoji: "🦐", description: "虾肉Q弹", tags: ["group"] },
+                { id: 83, name: "干锅鸡", emoji: "🍗", description: "鸡肉干香", tags: ["group"] },
+                { id: 84, name: "干锅排骨", emoji: "🍖", description: "排骨酥香", tags: ["group"] },
+                { id: 85, name: "红烧肉", emoji: "🥩", description: "肥而不腻", tags: ["group"] },
+                { id: 86, name: "糖醋排骨", emoji: "🍖", description: "酸甜可口", tags: ["group"] },
+                { id: 87, name: "宫保鸡丁", emoji: "🍗", description: "花生+鸡丁", tags: ["group"] },
+                { id: 88, name: "鱼香肉丝", emoji: "🥩", description: "鱼香四溢", tags: ["group"] },
+                { id: 89, name: "麻婆豆腐", emoji: "🥘", description: "麻辣下饭", tags: ["group"] },
+                { id: 90, name: "回锅肉", emoji: "🥩", description: "蒜苗+五花肉", tags: ["group"] },
+                { id: 91, name: "水煮牛肉", emoji: "🥩", description: "牛肉嫩滑", tags: ["group"] },
+                { id: 92, name: "毛血旺", emoji: "🍲", description: "麻辣重口", tags: ["group"] },
+                { id: 93, name: "夫妻肺片", emoji: "🥩", description: "川味凉菜", tags: ["group"] },
+                { id: 94, name: "口水鸡", emoji: "🍗", description: "麻辣鲜香", tags: ["solo"] },
+                { id: 95, name: "白切鸡", emoji: "🍗", description: "原汁原味", tags: ["solo"] },
+                { id: 96, name: "盐焗鸡", emoji: "🍗", description: "咸香入味", tags: ["solo"] },
+                { id: 97, name: "手撕鸡", emoji: "🍗", description: "手撕更香", tags: ["solo"] },
+                { id: 98, name: "辣子鸡", emoji: "🍗", description: "辣椒里找鸡", tags: ["group"] },
+                { id: 99, name: "黄焖鸡", emoji: "🍗", description: "鲜嫩多汁", tags: ["solo"] },
+                { id: 100, name: "红烧排骨", emoji: "🍖", description: "排骨软烂", tags: ["solo"] },
+                { id: 101, name: "红烧猪蹄", emoji: "🐷", description: "猪蹄软糯", tags: ["solo"] },
+                { id: 102, name: "红烧牛腩", emoji: "🥩", description: "牛腩软烂", tags: ["group"] },
+                { id: 103, name: "红烧羊肉", emoji: "🐑", description: "羊肉鲜美", tags: ["group"] },
+                { id: 104, name: "红烧鱼", emoji: "🐟", description: "鱼肉鲜嫩", tags: ["group"] },
+                { id: 105, name: "红烧茄子", emoji: "🍆", description: "茄子软糯", tags: ["solo"] },
+                { id: 106, name: "肯德基", emoji: "🍗", description: "炸鸡桶+汉堡", tags: ["solo"] },
+                { id: 107, name: "麦当劳", emoji: "🍔", description: "套餐+小食", tags: ["solo"] },
+                { id: 108, name: "必胜客", emoji: "🍕", description: "披萨+小吃拼盘", tags: ["group"] },
+                { id: 109, name: "海底捞", emoji: "🍲", description: "服务超好的火锅", tags: ["group"] },
+                { id: 110, name: "呷哺呷哺", emoji: "🍲", description: "一人食小火锅", tags: ["solo"] },
+                { id: 111, name: "西贝莜面村", emoji: "🍜", description: "西北风味聚餐", tags: ["group"] },
+                { id: 112, name: "外婆家", emoji: "🍳", description: "杭帮菜聚餐", tags: ["group"] },
+                { id: 113, name: "绿茶餐厅", emoji: "🍳", description: "创意融合菜", tags: ["group"] },
+                { id: 114, name: "探鱼", emoji: "🐟", description: "烤鱼专门店", tags: ["group"] },
+                { id: 115, name: "太二酸菜鱼", emoji: "🐟", description: "酸菜比鱼好吃", tags: ["group"] },
+                { id: 116, name: "半天妖烤鱼", emoji: "🐟", description: "青花椒烤鱼", tags: ["group"] },
+                { id: 117, name: "正新鸡排", emoji: "🍗", description: "炸鸡排+烤串", tags: ["solo"] },
+                { id: 118, name: "华莱士", emoji: "🍗", description: "平价汉堡炸鸡", tags: ["solo"] },
+                { id: 119, name: "塔斯汀", emoji: "🍔", description: "中国汉堡", tags: ["solo"] },
+                { id: 120, name: "绝味鸭脖", emoji: "🦆", description: "卤味零食", tags: ["solo"] },
+                { id: 121, name: "南京大牌档", emoji: "🏮", description: "金陵风味聚餐", tags: ["group"] },
+                { id: 122, name: "眉州东坡", emoji: "🍳", description: "川菜聚餐首选", tags: ["group"] },
+                { id: 123, name: "鼎泰丰", emoji: "🥟", description: "小笼包名店", tags: ["group"] },
+                { id: 124, name: "全聚德", emoji: "🦆", description: "北京烤鸭", tags: ["group"] },
+                { id: 125, name: "大董", emoji: "🦆", description: "意境菜烤鸭", tags: ["group"] },
+                { id: 126, name: "凑凑火锅", emoji: "🍲", description: "台式火锅聚餐", tags: ["group"] },
+                { id: 127, name: "哥老官", emoji: "🍲", description: "重庆美蛙火锅", tags: ["group"] },
+                { id: 128, name: "左庭右院", emoji: "🍲", description: "鲜牛肉火锅", tags: ["group"] },
+                { id: 129, name: "巴奴毛肚火锅", emoji: "🍲", description: "毛肚火锅", tags: ["group"] },
+                { id: 130, name: "炉鱼", emoji: "🐟", description: "烤鱼连锁", tags: ["group"] },
+                { id: 131, name: "江边城外", emoji: "🐟", description: "烤全鱼聚餐", tags: ["group"] },
+                { id: 132, name: "小肥羊", emoji: "🍲", description: "蒙古风味火锅", tags: ["group"] },
+                { id: 133, name: "东来顺", emoji: "🍲", description: "老北京涮肉", tags: ["group"] },
+                { id: 134, name: "九毛九", emoji: "🍜", description: "西北面食聚餐", tags: ["group"] },
+                { id: 135, name: "丰收日", emoji: "🍳", description: "浙菜海鲜", tags: ["group"] },
+                { id: 136, name: "桂满陇", emoji: "🏮", description: "杭帮创意菜", tags: ["group"] },
+                { id: 137, name: "避风塘", emoji: "🦀", description: "港式避风塘", tags: ["group"] }
             ]
         };
 
@@ -1301,6 +1571,19 @@
         let drawHistory = [];
         let currentResult = null;
         let audioContext = null;
+        let mealType = 'solo';
+
+        function selectMealType(type) {
+            mealType = type;
+            document.getElementById('soloBtn').classList.toggle('active', type === 'solo');
+            document.getElementById('groupBtn').classList.toggle('active', type === 'group');
+        }
+
+        function getFilteredFoods() {
+            const foods = foodsData[currentPeriod];
+            if (!mealType) return foods;
+            return foods.filter(food => food.tags && food.tags.includes(mealType));
+        }
 
         function initAudio() {
             if (!audioContext) {
@@ -1425,7 +1708,7 @@
         }
 
         function getRandomFood() {
-            const foods = foodsData[currentPeriod];
+            const foods = getFilteredFoods();
             const drawnFoodIds = drawHistory.map(item => item.foodId);
             const availableFoods = foods.filter(food => !drawnFoodIds.includes(food.id));
             
