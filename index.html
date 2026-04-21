@@ -1086,6 +1086,7 @@
             letter-spacing: 4px;
             position: relative;
             overflow: hidden;
+            display: inline-block;
         }
 
         .restart-btn::before {
@@ -1110,17 +1111,19 @@
 
         .end-buttons {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            margin-top: 30px;
         }
 
         .end-buttons .restart-btn {
-            flex: 1;
-            min-width: 140px;
-            max-width: 200px;
-            padding: 15px 20px;
-            font-size: 18px;
+            flex: 0 1 auto;
+            min-width: 100px;
+            padding: 14px 24px !important;
+            font-size: 16px !important;
+            width: auto !important;
+            letter-spacing: 2px !important;
         }
 
         .secondary-btn {
