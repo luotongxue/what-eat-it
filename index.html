@@ -1800,6 +1800,8 @@
         let currentPeriod = '';
         let remainingDraws = 3;
         let drawHistory = [];
+        let shuffledFoodIndices = [];
+        let currentShuffleIndex = 0;
         let currentResult = null;
         let audioContext = null;
         let mealType = 'solo';
@@ -1808,6 +1810,8 @@
             mealType = type;
             document.getElementById('soloBtn').classList.toggle('active', type === 'solo');
             document.getElementById('groupBtn').classList.toggle('active', type === 'group');
+            shuffledFoodIndices = [];
+            currentShuffleIndex = 0;
         }
 
         function getFilteredFoods() {
@@ -1938,17 +1942,53 @@
             return fortuneLevels[fortuneLevels.length - 1];
         }
 
+        function shuffleFoodArray(foods) {
+            const indices = Array.from({ length: foods.length }, (_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            return indices;
+        }
+
         function getRandomFood() {
             const foods = getFilteredFoods();
-            const drawnFoodIds = drawHistory.map(item => item.foodId);
-            const availableFoods = foods.filter(food => !drawnFoodIds.includes(food.id));
             
-            if (availableFoods.length === 0) {
-                return foods[Math.floor(Math.random() * foods.length)];
+            if (foods.length === 0) {
+                return foodsData[currentPeriod][Math.floor(Math.random() * foodsData[currentPeriod].length)];
             }
             
-            const randomIndex = Math.floor(Math.random() * availableFoods.length);
-            return availableFoods[randomIndex];
+            if (shuffledFoodIndices.length === 0 || currentShuffleIndex >= shuffledFoodIndices.length) {
+                shuffledFoodIndices = shuffleFoodArray(foods);
+                currentShuffleIndex = 0;
+            }
+            
+            const drawnFoodIds = drawHistory.map(item => item.foodId);
+            
+            while (currentShuffleIndex < shuffledFoodIndices.length) {
+                const foodIndex = shuffledFoodIndices[currentShuffleIndex];
+                currentShuffleIndex++;
+                const food = foods[foodIndex];
+                
+                if (!drawnFoodIds.includes(food.id)) {
+                    return food;
+                }
+            }
+            
+            shuffledFoodIndices = shuffleFoodArray(foods);
+            currentShuffleIndex = 0;
+            
+            while (currentShuffleIndex < shuffledFoodIndices.length) {
+                const foodIndex = shuffledFoodIndices[currentShuffleIndex];
+                currentShuffleIndex++;
+                const food = foods[foodIndex];
+                
+                if (!drawnFoodIds.includes(food.id)) {
+                    return food;
+                }
+            }
+            
+            return foods[Math.floor(Math.random() * foods.length)];
         }
 
         function init() {
@@ -2151,6 +2191,8 @@
             remainingDraws = 3;
             drawHistory = [];
             currentResult = null;
+            shuffledFoodIndices = [];
+            currentShuffleIndex = 0;
             
             document.getElementById('mainContent').classList.remove('hidden');
             document.getElementById('endPage').classList.add('hidden');
