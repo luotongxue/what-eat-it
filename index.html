@@ -999,6 +999,67 @@
             margin-top: 5px;
         }
 
+        .final-choice-card.top-tier {
+            border: 3px solid #FFD700;
+            background: linear-gradient(135deg, #FFF8DC, #FFFACD, #FFF8DC);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+            animation: topTierGlow 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        .final-choice-card.top-tier::after {
+            content: '✨';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 24px;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        .final-choice-card.top-tier::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+        }
+
+        .final-choice-card.top-tier .level {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .final-choice-card.top-tier .emoji {
+            animation: emojiFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes topTierGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3);
+            }
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.3) rotate(180deg);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes emojiFloat {
+            0%, 100% {
+                transform: scale(1.2) translateY(0);
+            }
+            50% {
+                transform: scale(1.3) translateY(-5px);
+            }
+        }
+
         .meal-type-buttons {
             display: flex;
             gap: 15px;
@@ -2331,11 +2392,12 @@
 
             drawHistory.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = 'final-choice-card';
+                const isTopTier = item.level === '上上签';
+                card.className = `final-choice-card${isTopTier ? ' top-tier' : ''}`;
                 card.innerHTML = `
                     <div class="emoji">${item.foodEmoji}</div>
                     <div class="name">${item.foodName}</div>
-                    <div class="level">${item.level}</div>
+                    <div class="level">${isTopTier ? '✨ 上上签 ✨' : item.level}</div>
                 `;
                 card.onclick = () => selectFinalChoice(item);
                 container.appendChild(card);
