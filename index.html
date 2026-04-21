@@ -1108,6 +1108,30 @@
             box-shadow: 0 12px 35px rgba(212, 165, 116, 0.5);
         }
 
+        .end-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .end-buttons .restart-btn {
+            flex: 1;
+            min-width: 140px;
+            max-width: 200px;
+            padding: 15px 20px;
+            font-size: 18px;
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, var(--text-gray), #444) !important;
+            box-shadow: 0 8px 25px rgba(102, 102, 102, 0.4) !important;
+        }
+
+        .secondary-btn:hover {
+            box-shadow: 0 12px 35px rgba(102, 102, 102, 0.5) !important;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -1262,8 +1286,10 @@
             <h2>今日已定，祝你好胃口！</h2>
             <div class="final-food" id="endFoodEmoji">🍗</div>
             <p class="end-text" id="endText">命运的安排，真香！</p>
-            <button class="restart-btn" onclick="showOrderModal()">立即下单</button>
-            <button class="restart-btn" style="margin-top: 15px; background: linear-gradient(135deg, var(--text-gray), #444);" onclick="resetDay()">明日再来</button>
+            <div class="end-buttons">
+                <button class="restart-btn" onclick="showOrderModal()">立即下单</button>
+                <button class="restart-btn secondary-btn" onclick="resetDay()">明日再来</button>
+            </div>
         </div>
     </div>
 
