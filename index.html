@@ -850,6 +850,89 @@
             box-shadow: 0 8px 25px rgba(212, 165, 116, 0.4);
         }
 
+        .modal-btn.tertiary {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+            font-size: 16px;
+            padding: 12px 25px;
+        }
+
+        .modal-btn.tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .order-modal .modal {
+            max-width: 500px;
+        }
+
+        .order-modal-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .order-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: orderBounce 0.6s ease-out;
+        }
+
+        @keyframes orderBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .order-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 28px;
+            color: var(--primary-red);
+            margin-bottom: 15px;
+        }
+
+        .order-text {
+            color: var(--text-gray);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+
+        .order-text .highlight {
+            color: var(--primary-red);
+            font-weight: bold;
+        }
+
+        .order-hint {
+            background: linear-gradient(135deg, #FFF5E6, #FFE8CC);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #8B6914;
+            border-left: 4px solid var(--primary-gold);
+        }
+
+        .order-close-btn {
+            padding: 12px 40px;
+            font-size: 16px;
+            font-family: 'Noto Serif SC', sans-serif;
+            background: linear-gradient(135deg, var(--primary-gold), #B8860B);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .order-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 165, 116, 0.4);
+        }
+
         .final-choice-modal .modal {
             max-width: 700px;
         }
@@ -1179,7 +1262,8 @@
             <h2>今日已定，祝你好胃口！</h2>
             <div class="final-food" id="endFoodEmoji">🍗</div>
             <p class="end-text" id="endText">命运的安排，真香！</p>
-            <button class="restart-btn" onclick="resetDay()">明日再来</button>
+            <button class="restart-btn" onclick="showOrderModal()">立即下单</button>
+            <button class="restart-btn" style="margin-top: 15px; background: linear-gradient(135deg, var(--text-gray), #444);" onclick="resetDay()">明日再来</button>
         </div>
     </div>
 
@@ -1204,6 +1288,27 @@
                 <h2 style="font-family: 'Ma Shan Zheng', cursive; color: var(--primary-red); margin-bottom: 10px;">三签已毕，天意如此</h2>
                 <p style="color: var(--text-gray); margin-bottom: 20px;">请从三签中择其一，命运的安排自有道理</p>
                 <div class="final-choices" id="finalChoices"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay order-modal" id="orderModal">
+        <div class="modal">
+            <div class="modal-content order-modal-content">
+                <div class="order-emoji" id="orderEmoji">🍗</div>
+                <div class="order-title">命运已定，只差下单！</div>
+                <div class="order-text">
+                    我们本来已经对接好了<span class="highlight">美团</span>和<span class="highlight">饿了么</span>的接口<br>
+                    准备让你抽到什么直接一键下单<br>
+                    但是……<br><br>
+                    <span class="highlight">他们没打钱！</span><br><br>
+                    所以只能委屈大家<br>
+                    自己打开外卖软件搜一下啦～
+                </div>
+                <div class="order-hint">
+                    💡 温馨提示：距离饭点越来越近，建议立即行动！
+                </div>
+                <button class="order-close-btn" onclick="closeOrderModal()">懂了，这就去点外卖</button>
             </div>
         </div>
     </div>
@@ -1858,6 +1963,17 @@
             data.finalChoice = currentResult;
             localStorage.setItem('lotteryData', JSON.stringify(data));
             showEndPage(currentResult);
+        }
+
+        function showOrderModal() {
+            if (currentResult) {
+                document.getElementById('orderEmoji').textContent = currentResult.food.emoji;
+            }
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
         }
 
         function drawAgain() {
